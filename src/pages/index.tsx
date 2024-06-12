@@ -26,7 +26,7 @@ const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
             </Head>
             <main>
                 <h1>hello</h1>
-                <Link href="/new-post">
+                <Link href="/Posts/newPost">
                     <button>+New Post</button>
                 </Link>
             </main>

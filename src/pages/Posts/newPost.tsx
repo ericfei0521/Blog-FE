@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { json } from "stream/consumers"
 
 const NewPost = () => {
     const [data, setData] = useState<{
@@ -21,7 +20,7 @@ const NewPost = () => {
             },
             method: "post",
         })
-            .then((res) => console.log("res"))
+            .then((res) => console.log("res", res))
             .catch((err) => console.log(err))
     }
 

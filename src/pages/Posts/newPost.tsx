@@ -11,8 +11,13 @@ const NewPost = () => {
         image: null,
     })
 
+    const [postData, setPostData] = useState<any>({
+        title: "",
+        content: "",
+        image: null,
+    })
+
     const upload = () => {
-        console.log(data)
         fetch("http://localhost:8080/posts/create-post", {
             body: JSON.stringify(data),
             headers: {
@@ -20,12 +25,29 @@ const NewPost = () => {
             },
             method: "post",
         })
-            .then((res) => console.log("res", res))
-            .catch((err) => console.log(err))
+            .then((res) => {
+                // Log the response object
+                console.log("res", res)
+                // Return the parsed JSON content
+                return res.json()
+            })
+            .then((json) => {
+                // Log the JSON content
+                const { post } = json
+                setPostData({
+                    title: post.title,
+                    content: post.content,
+                    image: post.imageUrl,
+                })
+                console.log("Response JSON:", json)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
-
+    console.log(postData)
     return (
-        <div>
+        <div style={{ backgroundColor: "gray", height: "100vh" }}>
             <h1>New Post</h1>
             <input
                 type="text"
@@ -49,6 +71,10 @@ const NewPost = () => {
                 }}
             />
             <button onClick={upload}>Submit</button>
+
+            <h1>title:{postData.title}</h1>
+            <div>content:{postData.content}</div>
+            <img src={postData.image} alt="test" />
         </div>
     )
 }

@@ -9,7 +9,7 @@ export const getStaticProps = async () => {
 }
 
 const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
-    console.log("result", result)
+    const { posts = [] } = result
     return (
         <>
             <Head>
@@ -29,6 +29,11 @@ const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <Link href="/Posts/newPost">
                     <button>+New Post</button>
                 </Link>
+                {posts.map((post: any) => (
+                    <Link href={`/Posts/${post?._id}`}>
+                        <button>{post?._id}</button>
+                    </Link>
+                ))}
             </main>
         </>
     )

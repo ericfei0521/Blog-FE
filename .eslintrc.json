@@ -47,6 +47,7 @@
         "react/jsx-one-expression-per-line": "off", // let it handle by prettier
         "quotes": ["off", "single"],
         "react/jsx-props-no-spreading": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "warn"
     }
 }

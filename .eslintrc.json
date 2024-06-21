@@ -35,6 +35,7 @@
         "max-len": "off", // let it handle by prettier
         "comma-dangle": "off", // let it handle by prettier
         "no-redeclare": "off", // let it handle by TypeScript
+        "no-underscore-dangle": "off",
         "react/jsx-indent": "off", // let it handle by prettier
         "no-unused-vars": "off", // let it handle by TypeScript
         "prettier/prettier": ["error", { "endOfLine": "auto" }],

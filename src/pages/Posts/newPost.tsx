@@ -4,7 +4,7 @@ const NewPost = () => {
     const [data, setData] = useState<{
         title: string
         content: string
-        image: string | null
+        image: FileList | null
     }>({
         title: "",
         content: "",
@@ -12,11 +12,14 @@ const NewPost = () => {
     })
 
     const upload = () => {
+        const formData = new FormData()
+        formData.append("title", data.title)
+        formData.append("content", data.content)
+        if (data.image && data.image.length > 0)
+            formData.append("image", data.image[0]) // Append the first file in the FileList
+
         fetch("http://localhost:8080/posts/create-post", {
-            body: JSON.stringify(data),
-            headers: {
-                "content-type": "application/json",
-            },
+            body: formData,
             method: "post",
         })
             .then((res) => {
@@ -29,7 +32,7 @@ const NewPost = () => {
     }
 
     return (
-        <div style={{ backgroundColor: "gray", height: "100vh" }}>
+        <div>
             <h1>New Post</h1>
             <input
                 type="text"
@@ -49,7 +52,7 @@ const NewPost = () => {
                 type="file"
                 name="image"
                 onChange={(e) => {
-                    setData({ ...data, image: e.target.value })
+                    setData({ ...data, image: e.target.files })
                 }}
             />
             <button onClick={upload}>Submit</button>

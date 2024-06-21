@@ -1,6 +1,7 @@
 import type { InferGetStaticPropsType } from "next"
 import Head from "next/head"
 import Link from "next/link"
+import Image from "next/image"
 
 export const getStaticProps = async () => {
     const res = await fetch("http://localhost:8080/posts")
@@ -30,8 +31,15 @@ const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
                     <button>+New Post</button>
                 </Link>
                 {posts.map((post: any) => (
-                    <Link href={`/Posts/${post?._id}`}>
-                        <button>{post?._id}</button>
+                    <Link href={`/Posts/${post._id}`} key={post._id}>
+                        <div>
+                            <div>{post?.title}</div>
+                            <Image
+                                src={post.imageUrl}
+                                width={300}
+                                height={300}
+                            />
+                        </div>
                     </Link>
                 ))}
             </main>

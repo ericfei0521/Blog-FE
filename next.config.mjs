@@ -10,6 +10,23 @@ const nextConfig = {
             },
         ],
     },
+    async rewrites() {
+        return [
+            {
+                source: "/auth/signup",
+                destination: "/sign-up",
+            },
+        ]
+    },
+    async redirects() {
+        return [
+            {
+                source: "/sign-up",
+                destination: "/auth/signup",
+                permanent: true,
+            },
+        ]
+    },
 }
 
 export default nextConfig

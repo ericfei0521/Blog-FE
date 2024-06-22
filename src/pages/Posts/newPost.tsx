@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useRouter } from "next/router"
 
 const NewPost = () => {
     const [data, setData] = useState<{
@@ -10,7 +11,7 @@ const NewPost = () => {
         content: "",
         image: null,
     })
-
+    const router = useRouter()
     const upload = () => {
         const formData = new FormData()
         formData.append("title", data.title)
@@ -23,8 +24,11 @@ const NewPost = () => {
             method: "post",
         })
             .then((res) => {
-                // Log the response object
-                console.log("res", res.json())
+                return res.json()
+            })
+            .then((result) => {
+                const { post } = result
+                return router.push(`/posts/${post._id}`)
             })
             .catch((err) => {
                 console.log(err)

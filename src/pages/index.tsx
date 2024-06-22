@@ -10,7 +10,8 @@ export const getStaticProps = async () => {
 }
 
 const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
-    const { posts = [] } = result
+    const { posts = [], total } = result
+    console.log(posts, total)
     return (
         <>
             <Head>
@@ -27,17 +28,21 @@ const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
             </Head>
             <main>
                 <h1>hello</h1>
-                <Link href="/Posts/newPost">
+                <Link href="/auth/signup" as="/sign-up">
+                    Sign up
+                </Link>
+                <Link href="/posts/newPost">
                     <button>+New Post</button>
                 </Link>
                 {posts.map((post: any) => (
-                    <Link href={`/Posts/${post._id}`} key={post._id}>
+                    <Link href={`/posts/${post._id}`} key={post._id}>
                         <div>
                             <div>{post?.title}</div>
                             <Image
                                 src={post.imageUrl}
                                 width={300}
                                 height={300}
+                                alt={post.imageUrl}
                             />
                         </div>
                     </Link>

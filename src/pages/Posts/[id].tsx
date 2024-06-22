@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useRouter } from "next/router"
 import type { GetServerSideProps } from "next"
 import Image from "next/image"
 // Define type for the post data
@@ -42,6 +43,7 @@ const Post = ({ result }: { result: PostData }) => {
     const [isEditMode, setIsEditMode] = useState<boolean>(false)
     const [data, setData] = useState<PostData>(result)
     const [imageData, setImageData] = useState<FileList | null>(null)
+    const router = useRouter()
     const upload = () => {
         const formData = new FormData()
         formData.append("title", data.title)
@@ -66,6 +68,17 @@ const Post = ({ result }: { result: PostData }) => {
                 console.log(err)
             })
     }
+    const deletePost = () => {
+        fetch(`http://localhost:8080/posts/post/${data._id}`, {
+            method: "DELETE",
+        })
+            .then(() => {
+                return router.push("/")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     if (!result) return <div>Loading...</div> // or any other fallback UI
 
@@ -75,6 +88,7 @@ const Post = ({ result }: { result: PostData }) => {
             <button onClick={() => setIsEditMode(!isEditMode)}>
                 {isEditMode ? "read" : "edit"}
             </button>
+            <button onClick={deletePost}>Delete</button>
             <div>
                 {isEditMode ? (
                     <>

@@ -28,14 +28,17 @@ const Home = ({ result }: InferGetStaticPropsType<typeof getStaticProps>) => {
             </Head>
             <main>
                 <h1>hello</h1>
+                <Link href="/auth/login" as="/login">
+                    Login
+                </Link>
                 <Link href="/auth/signup" as="/sign-up">
                     Sign up
                 </Link>
-                <Link href="/posts/newPost">
+                <Link href="/Posts/newPost">
                     <button>+New Post</button>
                 </Link>
                 {posts.map((post: any) => (
-                    <Link href={`/posts/${post._id}`} key={post._id}>
+                    <Link href={`/Posts/${post._id}`} key={post._id}>
                         <div>
                             <div>{post?.title}</div>
                             <Image

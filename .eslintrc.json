@@ -8,7 +8,6 @@
         "React": true
     },
     "extends": [
-        "airbnb",
         "prettier",
         "eslint:recommended",
         "next/core-web-vitals",

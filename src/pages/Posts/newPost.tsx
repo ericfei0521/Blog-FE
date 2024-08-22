@@ -14,6 +14,8 @@ const NewPost = () => {
     const router = useRouter()
     const upload = () => {
         const formData = new FormData()
+        const token = localStorage.getItem("token")
+
         formData.append("title", data.title)
         formData.append("content", data.content)
         if (data.image && data.image.length > 0)
@@ -22,13 +24,16 @@ const NewPost = () => {
         fetch("http://localhost:8080/posts/create-post", {
             body: formData,
             method: "post",
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+            } as HeadersInit,
         })
             .then((res) => {
                 return res.json()
             })
             .then((result) => {
                 const { post } = result
-                return router.push(`/posts/${post._id}`)
+                return router.push(`/Posts/${post._id}`)
             })
             .catch((err) => {
                 console.log(err)

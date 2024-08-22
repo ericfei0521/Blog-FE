@@ -1,50 +1,25 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import type { GetServerSideProps } from "next"
 import Image from "next/image"
+
 // Define type for the post data
 type PostData = {
     imageUrl: string
     _id: string
     title: string
     content: string
-}
-
-// Define the server-side props function
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { params } = context
-    const { id } = params as { id: string } // Ensure id is correctly typed
-    const apiUrl = `http://localhost:8080/posts/post/${id}`
-
-    try {
-        // Fetch data from API
-        const res = await fetch(apiUrl)
-        if (!res.ok) throw new Error(`Failed to fetch data from ${apiUrl}`)
-
-        // Parse JSON response
-        const result: PostData = await res.json()
-        return {
-            props: {
-                result,
-            },
-        }
-    } catch (error) {
-        return {
-            redirect: {
-                destination: "/404",
-                permanent: false,
-            },
-        }
-    }
+    isAuth?: boolean
 }
 
 // Define the Post component
-const Post = ({ result }: { result: PostData }) => {
+const Post = () => {
     const [isEditMode, setIsEditMode] = useState<boolean>(false)
-    const [data, setData] = useState<PostData>(result)
+    const [data, setData] = useState<PostData>()
     const [imageData, setImageData] = useState<FileList | null>(null)
     const router = useRouter()
+
     const upload = () => {
+        if (!data) return
         const formData = new FormData()
         formData.append("title", data.title)
         formData.append("content", data.content)
@@ -60,7 +35,6 @@ const Post = ({ result }: { result: PostData }) => {
                 return res.json()
             })
             .then((result: any) => {
-                console.log(result)
                 setData(result.post as PostData)
                 setIsEditMode(false)
             })
@@ -69,8 +43,14 @@ const Post = ({ result }: { result: PostData }) => {
             })
     }
     const deletePost = () => {
+        if (!data) return
+        const token = localStorage.getItem("token")
+
         fetch(`http://localhost:8080/posts/post/${data._id}`, {
             method: "DELETE",
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+            } as HeadersInit,
         })
             .then(() => {
                 return router.push("/")
@@ -80,15 +60,47 @@ const Post = ({ result }: { result: PostData }) => {
             })
     }
 
-    if (!result) return <div>Loading...</div> // or any other fallback UI
+    useEffect(() => {
+        const fetchPostData = async () => {
+            const { id } = router.query
+            if (!id) return
+
+            const apiUrl = `http://localhost:8080/posts/post/${id}`
+            const token = localStorage.getItem("token")
+
+            try {
+                const res = await fetch(apiUrl, {
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined,
+                    } as HeadersInit,
+                })
+                if (!res.ok)
+                    throw new Error(`Failed to fetch data from ${apiUrl}`)
+
+                const result: PostData = await res.json()
+                setData(result)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        fetchPostData()
+    }, [router])
+
+    if (!data) return <div>Loading...</div> // or any other fallback UI
 
     // Render post details
     return (
         <div>
-            <button onClick={() => setIsEditMode(!isEditMode)}>
-                {isEditMode ? "read" : "edit"}
-            </button>
-            <button onClick={deletePost}>Delete</button>
+            {data.isAuth && (
+                <>
+                    <button onClick={() => setIsEditMode(!isEditMode)}>
+                        {isEditMode ? "read" : "edit"}
+                    </button>
+                    <button onClick={deletePost}>Delete</button>
+                </>
+            )}
+
             <div>
                 {isEditMode ? (
                     <>

@@ -4,18 +4,17 @@ const SignUp = () => {
     const [showPWD, setShowPWD] = useState(false)
     const [data, setData] = useState<{
         email: string
-        name: string
         password: string
     }>({
         email: "",
-        name: "",
         password: "",
     })
 
     const submit = () => {
-        fetch("http://localhost:8080/auth/signup", {
+        fetch("http://localhost:8080/auth/login", {
             body: JSON.stringify(data),
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -24,7 +23,11 @@ const SignUp = () => {
                 return res.json()
             })
             .then((result) => {
-                console.log("result", result)
+                const jwtPayload = JSON.parse(
+                    window.atob(result.token.split(".")[1])
+                )
+                localStorage.setItem("expired", jwtPayload.exp)
+                localStorage.setItem("token", result.token)
             })
             .catch((err) => {
                 console.log(err)
@@ -40,14 +43,6 @@ const SignUp = () => {
                     setData({ ...data, email: e.target.value })
                 }}
             />
-            <label htmlFor="name">Name</label>
-            <input
-                type="text"
-                name="name"
-                onChange={(e) => {
-                    setData({ ...data, name: e.target.value })
-                }}
-            />
             <label htmlFor="password">Password</label>
             <input
                 type={showPWD ? "text" : "password"}
@@ -57,7 +52,7 @@ const SignUp = () => {
                 }}
             />
             <input type="checkbox" onChange={() => setShowPWD(!showPWD)} />
-            <button onClick={submit}>Submit</button>
+            <button onClick={submit}>Log in</button>
         </div>
     )
 }
